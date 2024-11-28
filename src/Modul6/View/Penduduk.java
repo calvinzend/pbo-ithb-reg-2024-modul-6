@@ -1,10 +1,14 @@
 package Modul6.View;
 
 import com.toedter.calendar.JDateChooser;
+
+import Modul6.Model.KTP;
+
+import java.sql.Date;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.text.SimpleDateFormat;
+// import java.text.SimpleDateFormat;
 import javax.swing.*;
 
 public class Penduduk {
@@ -19,10 +23,6 @@ public class Penduduk {
     }
 
     static class Frame extends JFrame {
-        CardLayout cardLayout = new CardLayout(); 
-        JPanel cardPanel = new JPanel(cardLayout);
-
-
 
         public Frame() {
             super("Input Data Penduduk");
@@ -32,13 +32,7 @@ public class Penduduk {
  
             JPanel inputPage = createInputPage();
 
-            JPanel resultPage = createResultPage();
-
-            cardPanel.add(inputPage, "InputPage");
-            cardPanel.add(resultPage, "ResultPage");
-
-            add(cardPanel, BorderLayout.CENTER);
-
+            add(inputPage);
             setVisible(true);
         }
 
@@ -284,7 +278,11 @@ public class Penduduk {
                     String nik = NIKValue.getText().trim();
                     String nama = namaValue.getText().trim();
                     String tempat = tempatLValue.getText().trim();
-                    java.util.Date tanggal = ttlValue.getDate();
+                    
+                    // Convert java.util.Date to java.sql.Date
+                    java.util.Date utilDate = ttlValue.getDate();  // Get java.util.Date
+                    java.sql.Date tanggal = (utilDate != null) ? new java.sql.Date(utilDate.getTime()) : null;  // Convert to java.sql.Date
+                    
                     String jenisKelamin = null;
                     String golonganDarah = null;
                     String alamat = alamatValue.getText();
@@ -296,149 +294,74 @@ public class Penduduk {
                     String negara = WNI.getText();
                     String berlakuHingga = berlakuHinggaValue.getText();
                     String kotaPembuatan = kotaPembuatanValue.getText();
-                    java.util.Date  tanggalPembuatan = tanggalPembuatanChooser.getDate();
-
+                    
+                    // Convert tanggalPembuatanChooser to java.sql.Date
+                    java.util.Date utilTanggalPembuatan = tanggalPembuatanChooser.getDate();  // Get java.util.Date
+                    java.sql.Date tanggalPembuatan = (utilTanggalPembuatan != null) ? new java.sql.Date(utilTanggalPembuatan.getTime()) : null;  // Convert to java.sql.Date
+            
                     if (priaButton.isSelected()) {
                         jenisKelamin = priaButton.getText();
                     } else if (wanitaButton.isSelected()) {
                         jenisKelamin = wanitaButton.getText();
                     }
-
+            
                     if (golA.isSelected()) {
                         golonganDarah = golA.getText();
-                    }else if ( golB.isSelected() ) {
+                    } else if (golB.isSelected()) {
                         golonganDarah = golB.getText();
-                        
-                    }else if (golO.isSelected()) {
+                    } else if (golO.isSelected()) {
                         golonganDarah = golO.getText();
-                        
-                    }else if(golAB.isSelected()){
+                    } else if (golAB.isSelected()) {
                         golonganDarah = golAB.getText();
                     }
-
+            
                     StringBuilder pekerjaan = new StringBuilder();
                     if (pengangguran.isSelected()) {
-                       pekerjaan.append("Pengangguran");
+                        pekerjaan.append("Pengangguran");
                     } else {
-                        if (karyawanSwasta.isSelected())pekerjaan.append(karyawanSwasta.getText()+", ");
-                        if (PNS.isSelected())pekerjaan.append(PNS.getText()+", ");
-                        if (wiraswasta.isSelected())pekerjaan.append(wiraswasta.getText()+", ");
-                        if (akademisi.isSelected())pekerjaan.append(akademisi.getText()+", ");
+                        if (karyawanSwasta.isSelected()) pekerjaan.append(karyawanSwasta.getText() + ", ");
+                        if (PNS.isSelected()) pekerjaan.append(PNS.getText() + ", ");
+                        if (wiraswasta.isSelected()) pekerjaan.append(wiraswasta.getText() + ", ");
+                        if (akademisi.isSelected()) pekerjaan.append(akademisi.getText() + ", ");
                         if (pekerjaan.length() > 0) {
-                           pekerjaan.setLength(pekerjaan.length() - 2);
+                            pekerjaan.setLength(pekerjaan.length() - 2); // Remove the last comma
                         }
                     }
-
+            
                     if (WNA.isSelected()) {
                         negara = negaraWNA.getText();
                     }
-
-                    if (nik.isEmpty() || nama.isEmpty() || tempat.isEmpty() || tanggalLahir == null ||
-            jenisKelamin == null || golonganDarah == null || alamat.isEmpty() || RT_RW.isEmpty() ||
-            kelDesa.isEmpty() || kecamatan.isEmpty() || agama == null || status == null ||
-            pekerjaan.isEmpty() || negara.isEmpty() || berlakuHingga.isEmpty() ||
-            kotaPembuatan.isEmpty()  || tanggalPembuatan == null) {
+            
+                    if (nik.isEmpty() || nama.isEmpty() || tempat.isEmpty() || tanggal == null ||
+                        jenisKelamin == null || golonganDarah == null || alamat.isEmpty() || RT_RW.isEmpty() ||
+                        kelDesa.isEmpty() || kecamatan.isEmpty() || agama == null || status == null ||
+                        pekerjaan.isEmpty() || negara.isEmpty() || berlakuHingga.isEmpty() ||
+                        kotaPembuatan.isEmpty() || tanggalPembuatan == null) {
                         JOptionPane.showMessageDialog(inputPanel, "Mohon isi semua field!", "Error", JOptionPane.ERROR_MESSAGE);
                         return;
                     } else {
-
+            
                         String fotoPath = fotoValue.getText().trim();
                         String tandaTanganPath = tandaTanganValue.getText().trim();
-
-                        JLabel userPhotoLabel = (JLabel) ((JPanel) ((JPanel) cardPanel.getComponent(1)).getComponent(1)).getComponent(0);
-                        JLabel signatureLabel = (JLabel) ((JPanel) ((JPanel) cardPanel.getComponent(1)).getComponent(1)).getComponent(1);
-                
-                        if (!fotoPath.isEmpty()) {
-                            ImageIcon fotoIcon = new ImageIcon(fotoPath);
-                            Image resizedFoto = fotoIcon.getImage().getScaledInstance(150, 150, Image.SCALE_SMOOTH);
-                            userPhotoLabel.setIcon(new ImageIcon(resizedFoto));
-                        }
-                
-                        if (!tandaTanganPath.isEmpty()) {
-                            ImageIcon tandaTanganIcon = new ImageIcon(tandaTanganPath);
-                            Image resizedTandaTangan = tandaTanganIcon.getImage().getScaledInstance(150, 150, Image.SCALE_SMOOTH);
-                            signatureLabel.setIcon(new ImageIcon(resizedTandaTangan));
-                        }
-                       
-                        
-                        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
-                        String tanggalFormatted = sdf.format(tanggal);
-
-                        String tanggalPembuatanHasil = sdf.format(tanggalPembuatan);
-
-                        JLabel kotaPembuatanLabel = (JLabel) ((JPanel) ((JPanel) cardPanel.getComponent(1)).getComponent(1)).getComponent(2);
-                        JLabel tanggalPembuatanLabel = (JLabel) ((JPanel) ((JPanel) cardPanel.getComponent(1)).getComponent(1)).getComponent(3);
-
-                        kotaPembuatanLabel.setText("Kota Pembuatan: " + kotaPembuatan);
-                        tanggalPembuatanLabel.setText("Tanggal Pembuatan: " + tanggalPembuatanHasil );
-
-                        JLabel resultLabel = (JLabel) ((JPanel) cardPanel.getComponent(1)).getComponent(0);
-                        String hasil = "<html>" +
-                                "<h1>“Republik Harapan Bangsa”</h1>"+
-                                "<b>NIK:</b> " + nik + "<br>" +
-                                "<b>Nama:</b> " + nama + "<br>" +
-                                "<b>Tempat, Tanggal Lahir:</b> " + tempat + ", " + tanggalFormatted + "<br>" +
-                                "<b>Jenis Kelamin:</b> " + jenisKelamin + "<br>" +
-                                "<b>Golongan Darah:</b> " + golonganDarah + "<br>" +
-                                "<b>Alamat:</b> " + alamat + "<br>" +
-                                "<b>RT/RW:</b> " + RT_RW + "<br>" +
-                                "<b>Kel/Desa:</b> " + kelDesa + "<br>" +
-                                "<b>Kecamatan:</b> " + kecamatan + "<br>" +
-                                "<b>Agama:</b> " + agama + "<br>" +
-                                "<b>Status Perkawinan:</b> " + status + "<br>" +
-                                "<b>Pekerjaaan:</b> " + pekerjaan + "<br>" +
-                                "<b>Kewarganegaraan:</b> " + negara + "<br>" +
-                                "<b>Berlaku Hingga:</b> " + berlakuHingga + "<br>" +
-                                "</html>";
-                        resultLabel.setText(hasil);
-                        
-                        cardLayout.show(cardPanel, "ResultPage");
+            
+                        KTP hasiKtp = new KTP(nik, nama, tempat,  tanggal, jenisKelamin, golonganDarah, alamat, RT_RW, kelDesa, kecamatan, agama, status, pekerjaan.toString(), negara, berlakuHingga, kotaPembuatan, tanggalPembuatan, fotoPath, tandaTanganPath);
+            
+                        Result resultFrame = new Result(hasiKtp);
+                        dispose();
+                        resultFrame.setVisible(true);
+            
+                        ((JFrame) SwingUtilities.getWindowAncestor(inputPanel)).dispose();
                     }
                 }
             });
+            
+            
+         
 
             return inputPanel;
         }
 
-        private JPanel createResultPage() {
-            JPanel resultPanel = new JPanel(new BorderLayout());
-            JLabel resultLabel = new JLabel("<html><b>Hasil akan ditampilkan di sini</b></html>", SwingConstants.CENTER);
-            resultPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
-            resultPanel.setBorder(BorderFactory.createEmptyBorder(10, 40, 10, 0));
-            resultPanel.setBackground(new Color(173, 216, 230));
-
-            JPanel imagePanel = new JPanel(new GridLayout(4, 1, 0, 3));
-            imagePanel.setBorder(BorderFactory.createEmptyBorder(10, 0, 40, 40));
-            imagePanel.setBackground(new Color(173, 216, 230));
-            JLabel userPhotoLabel = new JLabel("");
-            JLabel signatureLabel = new JLabel("");
-            JLabel kotaPembuatanLabel = new JLabel("");  
-            JLabel tanggalPembuatanLabel = new JLabel("");
-
-            userPhotoLabel.setAlignmentX(Component.TOP_ALIGNMENT);
-            kotaPembuatanLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-            tanggalPembuatanLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-            signatureLabel.setAlignmentX(Component.BOTTOM_ALIGNMENT);
-
-            imagePanel.add(userPhotoLabel);
-            imagePanel.add(kotaPembuatanLabel);
-            imagePanel.add(tanggalPembuatanLabel);
-            imagePanel.add(signatureLabel);
-            
-
-            resultPanel.add(resultLabel, BorderLayout.WEST);
-            resultPanel.add(imagePanel, BorderLayout.EAST);
-            resultPanel.add(backButton, BorderLayout.SOUTH);
-
-            backButton.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    cardLayout.show(cardPanel, "InputPage");
-                }
-            });
-
-            return resultPanel;
-        }
+ 
     }
 
 
