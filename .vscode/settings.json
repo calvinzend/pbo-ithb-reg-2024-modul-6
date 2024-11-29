@@ -3,6 +3,7 @@
     "java.project.outputPath": "bin",
     "java.project.referencedLibraries": [
         "lib/**/*.jar",
-        "c:\\Users\\Calvi\\Downloads\\jcalendar-1.4\\lib\\jcalendar-1.4.jar"
+        "c:\\Users\\Calvi\\Downloads\\jcalendar-1.4\\lib\\jcalendar-1.4.jar",
+        "c:\\Users\\Calvi\\Downloads\\mysql-connector-j-9.1.0\\mysql-connector-j-9.1.0\\mysql-connector-j-9.1.0.jar"
     ]
 }

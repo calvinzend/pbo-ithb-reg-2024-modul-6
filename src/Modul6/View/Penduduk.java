@@ -2,13 +2,14 @@ package Modul6.View;
 
 import com.toedter.calendar.JDateChooser;
 
+import Modul6.Controller.controller;
+import Modul6.Model.Databases;
 import Modul6.Model.KTP;
 
 import java.sql.Date;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-// import java.text.SimpleDateFormat;
 import javax.swing.*;
 
 public class Penduduk {
@@ -257,7 +258,6 @@ public class Penduduk {
                 @Override
                 public void actionPerformed(ActionEvent e){
                     negaraWNA.setEnabled(WNA.isSelected());
-                    
                 }
             });
 
@@ -279,9 +279,8 @@ public class Penduduk {
                     String nama = namaValue.getText().trim();
                     String tempat = tempatLValue.getText().trim();
                     
-                    // Convert java.util.Date to java.sql.Date
-                    java.util.Date utilDate = ttlValue.getDate();  // Get java.util.Date
-                    java.sql.Date tanggal = (utilDate != null) ? new java.sql.Date(utilDate.getTime()) : null;  // Convert to java.sql.Date
+                    java.util.Date utilDate = ttlValue.getDate();  
+                    java.sql.Date tanggal = (utilDate != null) ? new java.sql.Date(utilDate.getTime()) : null; 
                     
                     String jenisKelamin = null;
                     String golonganDarah = null;
@@ -295,7 +294,6 @@ public class Penduduk {
                     String berlakuHingga = berlakuHinggaValue.getText();
                     String kotaPembuatan = kotaPembuatanValue.getText();
                     
-                    // Convert tanggalPembuatanChooser to java.sql.Date
                     java.util.Date utilTanggalPembuatan = tanggalPembuatanChooser.getDate();  // Get java.util.Date
                     java.sql.Date tanggalPembuatan = (utilTanggalPembuatan != null) ? new java.sql.Date(utilTanggalPembuatan.getTime()) : null;  // Convert to java.sql.Date
             
@@ -346,6 +344,8 @@ public class Penduduk {
             
                         KTP hasiKtp = new KTP(nik, nama, tempat,  tanggal, jenisKelamin, golonganDarah, alamat, RT_RW, kelDesa, kecamatan, agama, status, pekerjaan.toString(), negara, berlakuHingga, kotaPembuatan, tanggalPembuatan, fotoPath, tandaTanganPath);
             
+                        controller simpan = new controller(hasiKtp);
+                        simpan.addData();
                         Result resultFrame = new Result(hasiKtp);
                         dispose();
                         resultFrame.setVisible(true);
@@ -354,16 +354,12 @@ public class Penduduk {
                     }
                 }
             });
-            
-            
-         
 
             return inputPanel;
         }
 
  
     }
-
 
     public static void main(String[] args) {
         new Frame();
