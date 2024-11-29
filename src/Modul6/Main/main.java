@@ -1,10 +1,7 @@
 package Modul6.Main;
 
-import java.awt.Frame;
-import java.util.ArrayList;
 
 import Modul6.View.MainMenu;
-import Modul6.View.Penduduk;
 
 
 public class main {

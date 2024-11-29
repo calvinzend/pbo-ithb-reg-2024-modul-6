@@ -6,6 +6,7 @@ import java.awt.event.ActionListener;
 import java.text.SimpleDateFormat;
 import javax.swing.*;
 
+import Modul6.Controller.controller;
 import Modul6.Model.KTP;
 
 public class Rekap extends JFrame {
@@ -90,7 +91,17 @@ public class Rekap extends JFrame {
         update.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e){
-                
+                System.out.println(data.getNIK());
+                new Update.Frame(data.getNIK());
+                dispose();
+            }
+        });
+        delete.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e){
+                System.out.println(data.getNIK());
+                controller.deleteData(data.getNIK());
+                dispose();
             }
         });
 

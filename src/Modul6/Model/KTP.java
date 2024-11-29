@@ -326,5 +326,44 @@ public class KTP {
             return false;
         }
     }
+    public static KTP getData(String nik) {
+        KTP dataKTP = null;
+        String query = "SELECT * FROM KTP WHERE NIK = ?";
+
+        try (Connection con = ConnectionManager.getConnection();
+                PreparedStatement st = con.prepareStatement(query)) {
+
+            st.setString(1, nik);
+            try (ResultSet rs = st.executeQuery()) {
+                while (rs.next()) {
+                    dataKTP = new KTP(
+                            rs.getString("NIK"),
+                            rs.getString("nama"),
+                            rs.getString("tempatLahir"),
+                            rs.getDate("tanggalLahir"),
+                            rs.getString("jenisKelamin"),
+                            rs.getString("golonganDarah"),
+                            rs.getString("alamat"),
+                            rs.getString("RT_RW"),
+                            rs.getString("kelDesa"),
+                            rs.getString("kecamatan"),
+                            rs.getString("agama"),
+                            rs.getString("statusPerkawinan"),
+                            rs.getString("pekerjaan"),
+                            rs.getString("kewarganegaraan"),
+                            rs.getString("berlakuHingga"),
+                            rs.getString("kotaPembuatan"),
+                            rs.getDate("tanggalPembuatan"),
+                            rs.getString("fotoPath"),
+                            rs.getString("tandaTanganPath"));
+                }
+            }
+
+        } catch (SQLException e) {
+            System.err.println("Error fetching data: " + e.getMessage());
+        }
+        return dataKTP;
+    }
+    
 
 }
