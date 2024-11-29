@@ -322,7 +322,7 @@ public class Penduduk {
                         if (wiraswasta.isSelected()) pekerjaan.append(wiraswasta.getText() + ", ");
                         if (akademisi.isSelected()) pekerjaan.append(akademisi.getText() + ", ");
                         if (pekerjaan.length() > 0) {
-                            pekerjaan.setLength(pekerjaan.length() - 2); // Remove the last comma
+                            pekerjaan.setLength(pekerjaan.length() - 2); 
                         }
                     }
             

@@ -205,48 +205,51 @@ public class KTP {
         this.tandaTanganPath = tandaTanganPath;
     }
 
-    public static ArrayList<KTP> ambilData() {
+    public static ArrayList<KTP> ambilData(String input) {
         ArrayList<KTP> data = new ArrayList<>();
-        String query = "SELECT * FROM KTP;";
+        String query = "SELECT * FROM KTP WHERE NIK = ?";
 
         try (Connection con = ConnectionManager.getConnection();
-                PreparedStatement st = con.prepareStatement(query);
-                ResultSet rs = st.executeQuery()) {
+                PreparedStatement st = con.prepareStatement(query)) {
 
-            while (rs.next()) {
-                KTP ktp = new KTP(
-                        rs.getString("NIK"),
-                        rs.getString("nama"),
-                        rs.getString("tempatLahir"),
-                        rs.getDate("tanggalLahir"),
-                        rs.getString("jenisKelamin"),
-                        rs.getString("golonganDarah"),
-                        rs.getString("alamat"),
-                        rs.getString("RT_RW"),
-                        rs.getString("kelDesa"),
-                        rs.getString("kecamatan"),
-                        rs.getString("agama"),
-                        rs.getString("statusPerkawinan"),
-                        rs.getString("pekerjaan"),
-                        rs.getString("kewarganegaraan"),
-                        rs.getString("berlakuHingga"),
-                        rs.getString("kotaPembuatan"),
-                        rs.getDate("tanggalPembuatan"),
-                        rs.getString("fotoPath"),
-                        rs.getString("tandaTanganPath"));
-                data.add(ktp);              
+            st.setString(1, input);
+            try (ResultSet rs = st.executeQuery()) {
+                while (rs.next()) {
+                    KTP ktp = new KTP(
+                            rs.getString("NIK"),
+                            rs.getString("nama"),
+                            rs.getString("tempatLahir"),
+                            rs.getDate("tanggalLahir"),
+                            rs.getString("jenisKelamin"),
+                            rs.getString("golonganDarah"),
+                            rs.getString("alamat"),
+                            rs.getString("RT_RW"),
+                            rs.getString("kelDesa"),
+                            rs.getString("kecamatan"),
+                            rs.getString("agama"),
+                            rs.getString("statusPerkawinan"),
+                            rs.getString("pekerjaan"),
+                            rs.getString("kewarganegaraan"),
+                            rs.getString("berlakuHingga"),
+                            rs.getString("kotaPembuatan"),
+                            rs.getDate("tanggalPembuatan"),
+                            rs.getString("fotoPath"),
+                            rs.getString("tandaTanganPath"));
+                    data.add(ktp);
+                }
             }
+
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.err.println("Error fetching data: " + e.getMessage());
         }
         return data;
     }
 
-    public static boolean addData(KTP penduduk){
+    public static boolean addData(KTP penduduk) {
         String query = "INSERT INTO KTP VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try {
-            PreparedStatement st =  ConnectionManager.getConnection().prepareStatement (query);
-           
+            PreparedStatement st = ConnectionManager.getConnection().prepareStatement(query);
+
             st.setString(1, penduduk.getNIK());
             st.setString(2, penduduk.getNama());
             st.setString(3, penduduk.getTempatLahir());
@@ -266,11 +269,60 @@ public class KTP {
             st.setDate(17, penduduk.getTanggalPembuatan());
             st.setString(18, penduduk.getFotoPath());
             st.setString(19, penduduk.getTandaTanganPath());
-    
+
             st.execute();
             return true;
         } catch (SQLException e) {
             e.printStackTrace();
+            return false;
+        }
+    }
+
+    public static boolean updateData(KTP penduduk) {
+        String query = "UPDATE KTP SET nama = ?, tempatLahir = ?, tanggalLahir = ?, jenisKelamin = ?, "
+                + "golonganDarah = ?, alamat = ?, RT_RW = ?, kelDesa = ?, kecamatan = ?, agama = ?, "
+                + "statusPerkawinan = ?, pekerjaan = ?, kewarganegaraan = ?, berlakuHingga = ?, "
+                + "kotaPembuatan = ?, tanggalPembuatan = ?, fotoPath = ?, tandaTanganPath = ? WHERE NIK = ?";
+        try {
+            PreparedStatement st = ConnectionManager.getConnection().prepareStatement(query);
+            st.setString(1, penduduk.getNama());
+            st.setString(2, penduduk.getTempatLahir());
+            st.setDate(3, penduduk.getTanggalLahir());
+            st.setString(4, penduduk.getJenisKelamin());
+            st.setString(5, penduduk.getGolonganDarah());
+            st.setString(6, penduduk.getAlamat());
+            st.setString(7, penduduk.getRT_RW());
+            st.setString(8, penduduk.getKelDesa());
+            st.setString(9, penduduk.getKecamatan());
+            st.setString(10, penduduk.getAgama());
+            st.setString(11, penduduk.getStatusPerkawinan());
+            st.setString(12, penduduk.getPekerjaan());
+            st.setString(13, penduduk.getKewarganegaraan());
+            st.setString(14, penduduk.getBerlakuHingga());
+            st.setString(15, penduduk.getKotaPembuatan());
+            st.setDate(16, penduduk.getTanggalPembuatan());
+            st.setString(17, penduduk.getFotoPath());
+            st.setString(18, penduduk.getTandaTanganPath());
+            st.setString(19, penduduk.getNIK());
+
+            st.execute();
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public static boolean deleteData(String nik) {
+        String query = "DELETE FROM KTP WHERE NIK = ?";
+        try (Connection con = ConnectionManager.getConnection();
+             PreparedStatement st = con.prepareStatement(query)) {
+    
+            st.setString(1, nik);
+            int rowsDeleted = st.executeUpdate();
+            return rowsDeleted > 0; 
+        } catch (SQLException e) {
+            System.err.println("Error deleting data: " + e.getMessage());
             return false;
         }
     }

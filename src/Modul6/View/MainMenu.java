@@ -1,6 +1,9 @@
 package Modul6.View;
 
 import javax.swing.*;
+
+import Modul6.Controller.controller;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -35,6 +38,17 @@ public class MainMenu{
             }
         });
 
+        pencarian.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e){
+                String input = JOptionPane.showInputDialog("Masukkan NIK");
+                controller controller = new controller();
+
+                if (controller.showData(input)) {
+                    frame.dispose();
+                }
+            }
+        });
 
         exit.addActionListener(new ActionListener() {
             @Override
@@ -49,10 +63,7 @@ public class MainMenu{
         main.add(exit);
 
         frame.add(centerPanel);
-
         frame.setVisible(true);
     }
-    public static void main(String[] args) {
-        new MainMenu();
-    }
+
 }
